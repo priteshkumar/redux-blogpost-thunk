@@ -33,14 +33,27 @@ const initialState = {
   error: null,
 };
 
-export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
-  try {
-    const response = await axios.get(POSTS_URL);
-    return [...response.data];
-  } catch (err) {
-    return err.message;
+export const fetchPosts = createAsyncThunk(
+  "posts/fetchPosts",
+  async () => {
+    try {
+      console.log("call api");
+      const response = await axios.get(POSTS_URL);
+      return [...response.data];
+    } catch (err) {
+      return err.message;
+    }
+  },
+  {
+    condition(arg, thunkApi) {
+      const postsStatus = getPostsStatus(thunkApi.getState());
+      if (postsStatus !== "idle") {
+        console.log("return false thunk");
+        return false;
+      }
+    },
   }
-});
+);
 
 export const addNewPost = createAsyncThunk(
   "posts/addNewPost",
@@ -95,7 +108,7 @@ const postsSlice = createSlice({
         state.status = "succeeded";
         let min = 1;
         const loadedPosts = action.payload.map((post) => {
-          console.log("postid: ",post.id);
+          //console.log("postid: ", post.id);
           post.date = sub(new Date(), { minutes: min++ }).toISOString();
           post.reactions = {
             thumbsup: 0,
