@@ -95,6 +95,7 @@ const postsSlice = createSlice({
         state.status = "succeeded";
         let min = 1;
         const loadedPosts = action.payload.map((post) => {
+          console.log("postid: ",post.id);
           post.date = sub(new Date(), { minutes: min++ }).toISOString();
           post.reactions = {
             thumbsup: 0,
@@ -102,7 +103,8 @@ const postsSlice = createSlice({
           };
           return post;
         });
-        state.posts = state.posts.concat(loadedPosts);
+        //state.posts = state.posts.concat(loadedPosts);
+        state.posts = loadedPosts;
       })
       .addCase(fetchPosts.rejected, (state, action) => {
         state.status = "failed";

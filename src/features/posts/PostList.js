@@ -16,24 +16,27 @@ function PostList() {
 
   useEffect(() => {
     if (postsStatus === "idle") {
+      console.log("dispatch fetchposts");
       dispatch(fetchPosts());
     }
   }, [postsStatus, dispatch]);
-
+  console.log("render postlist");
   let content;
-  if(postsStatus === 'loading'){
+  if (postsStatus === "loading") {
     content = <p>Loading...</p>;
-  }
-  else if(postsStatus === 'succeeded'){
-  const orderedPosts = posts
-    .slice()
-    .sort((a, b) => b.date.localeCompare(a.date));
+  } else if (postsStatus === "succeeded") {
+    console.log("sort posts");
+    const orderedPosts = posts
+      .slice()
+      .sort((a, b) => b.date.localeCompare(a.date));
 
-  content = orderedPosts.map((post) => (
-    <PostExcerpt key={post.id} post={post}/>
-  ));
-  }
-  else if(postsStatus === 'failed'){
+    for (let i = 0; i < orderedPosts.length; i++) {
+      console.log("ordered post id: ", orderedPosts[i].id);
+    }
+    content = orderedPosts.map((post) => (
+      <PostExcerpt key={post.id} post={post} />
+    ));
+  } else if (postsStatus === "failed") {
     content = <p>{error}</p>;
   }
   return (
